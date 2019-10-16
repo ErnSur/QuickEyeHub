@@ -16,20 +16,24 @@ namespace QuickEye.PackageHub
         [OnOpenAsset]
         private static bool Install(int instanceID, int line)
         {
-            var obj = EditorUtility.InstanceIDToObject(instanceID) as PackageWizard;
-            Debug.Log($"Install {obj.name}");
-            var request = Client.Add(obj.identifier);
-            
-            while (request.Status == StatusCode.InProgress)
+            if (EditorUtility.InstanceIDToObject(instanceID) is PackageWizard obj)
             {
+                Debug.Log($"Installing {obj.name}");
+                var request = Client.Add(obj.identifier);
+
+                while (request.Status == StatusCode.InProgress)
+                {
+                }
+
+                var result = request.Result;
+                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(instanceID), result.name);
+
+                obj._displayName = result.displayName;
+
+                return true;
             }
 
-            var result = request.Result;
-            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(instanceID), result.name);
-            
-            obj._displayName = result.displayName;
-
-            return true;
+            return false;
         }
     }
 }
