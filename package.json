@@ -1,0 +1,9 @@
+{
+  "name": "com.quickeye.packagehub",
+  "displayName": "Package Hub",
+  "version": "1.0.0",
+  "unity": "2019.1",
+  "author": "Ernest Sury\u015b",
+  "description": "Package manager for my own tools",
+  "type": "tool"
+}
