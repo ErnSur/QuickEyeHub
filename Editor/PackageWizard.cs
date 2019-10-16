@@ -21,8 +21,12 @@ namespace QuickEye.PackageHub
                 Debug.Log($"Installing {obj.name}");
                 var request = Client.Add(obj.identifier);
 
-                while (request.Status == StatusCode.InProgress)
+                while (request.Status == StatusCode.InProgress) { }
+
+                if(request.Status == StatusCode.Failure)
                 {
+                    Debug.Log($"{request.Error.errorCode}: {request.Error.message}");
+                    return false;
                 }
 
                 var result = request.Result;
