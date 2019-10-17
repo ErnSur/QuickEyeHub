@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Button text="Button" class="item-label package-item">
+        <Style src="PackageItem.uss" />
+        <ui:VisualElement name="spacer" style="flex-grow: 1;" />
+        <ui:VisualElement name="icon" style="width: 20px; height: 20px;" />
+    </ui:Button>
+</ui:UXML>

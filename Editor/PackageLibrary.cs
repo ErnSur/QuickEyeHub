@@ -12,9 +12,9 @@ namespace QuickEye.PackageHub
     [CreateAssetMenu(menuName = "Package Hub/Package Library")]
     public class PackageLibrary : ScriptableObject
     {
-        public const string _packageListJsonGistUrl = "https://gist.githubusercontent.com/rdsubhas/ed77e9547d989dabe061/raw/6d7775eaacd9beba826e0541ba391c0da3933878/gnc-js-api";
+        public const string _packageListJsonGistUrl = "https://gist.githubusercontent.com/ErnSur/6ce729828c7f6304a10b605addbb3a06/raw/2544c78e4373b5d02121254e65e455bcefe91be3/quickeyehub-manifest.json";
 
-        public PackageLinks identifiers;
+        public PackageLinks packages;
 
         private CancellationTokenSource cancellationTS;
 
@@ -29,22 +29,20 @@ namespace QuickEye.PackageHub
         [ContextMenu("Save")]
         public void SaveData()
         {
-            var json = JsonUtility.ToJson(identifiers, true);
-            Debug.Log($"o:{identifiers}, json: {json}");
+            var json = JsonUtility.ToJson(packages, true);
+            Debug.Log($"o:{packages}, json: {json}");
 
-            identifiers = JsonUtility.FromJson<PackageLinks>(json);
+            packages = JsonUtility.FromJson<PackageLinks>(json);
         }
 
         private async Task FetchPackagesData(string rawUrl)
         {
-            
-            using (WebClient client = new WebClient())
+            using (var client = new WebClient())
             {
-
                 var task = client.DownloadStringTaskAsync(rawUrl);
                 await task;
 
-                Debug.Log(task.Result);
+                packages = JsonUtility.FromJson<PackageLinks>(task.Result);
             }
         }
 
@@ -57,8 +55,8 @@ namespace QuickEye.PackageHub
         [Serializable]
         public class PackageLink
         {
-            public string gitUrl;
-            public string displayName;
+            public string name;
+            public string url;
         }
     }
 }
