@@ -13,7 +13,7 @@ namespace QuickEye.PackageHub
     {
         public const string packageListJsonGistUrl = "https://gist.githubusercontent.com/ErnSur/6ce729828c7f6304a10b605addbb3a06/raw/2544c78e4373b5d02121254e65e455bcefe91be3/quickeyehub-manifest.json";
 
-        public const string packageUniqueName = "com.quickeye.packagehub";
+        public const string packageUniqueName = "com.quickeye.quickeyehub";
 
         public static async Task<PackageLinks> FetchPackagesData()
         {
