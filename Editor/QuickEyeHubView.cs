@@ -5,16 +5,21 @@ namespace QuickEye.PackageHub
 {
     public class QuickEyeHubView : VisualElement
     {
+        public const string packageListViewName = "package-list";
+
         private ListView _packageList;
         private VisualTreeAsset _packageItem;
 
         private PackageLinks _model;
+
 
         public QuickEyeHubView(PackageLinks model)
         {
             _model = model;
 
             _packageItem = Resources.Load<VisualTreeAsset>("QuickEyeHub/PackageItem");
+            styleSheets.Add(Resources.Load<StyleSheet>("QuickEyeHub/PackageHub"));
+
             style.flexGrow = 1;
             AddPackageList();
         }
@@ -28,9 +33,7 @@ namespace QuickEye.PackageHub
         private void AddPackageList()
         {
             _packageList = new ListView(_model.packages, 20, MakePackageItem, BindPackageItem);
-            _packageList.style.flexGrow = 1;
-            _packageList.style.height = 80;
-            //_packageList.style.backgroundColor = Color.green;
+            _packageList.name = packageListViewName;
 
             void BindPackageItem(VisualElement e, int i)
             {

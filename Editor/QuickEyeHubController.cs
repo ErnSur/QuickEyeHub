@@ -1,54 +1,11 @@
 ﻿using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.PackageManager.UI;
-using UnityEditor.PackageManager;
 using System;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuickEye.PackageHub
 {
-    public class QuickEyeHubModel
-    {
-        public List<Package> packages = new List<Package>();
-
-        public class Package : PackageLink
-        {
-            public bool downloaded;
-
-            public Package(PackageLink l)
-            {
-                name = l.name;
-                url = l.url;
-            }
-        }
-
-        public async void Fetch(Action onEnd = null)
-        {
-            var newModel = await PackageData.FetchPackagesData();
-            packages.Clear();
-            packages.AddRange(newModel.packages.Select(l => new Package(l)));
-            await FetchStatus();
-
-            onEnd?.Invoke();
-        }
-
-        public async Task FetchStatus()
-        {
-            //var listRequest = Client.List();
-
-            //while (listRequest.Status == StatusCode.InProgress) { }
-            //var packageNames = listRequest.Result.Select(p => p.name);
-            //packages.Select(p=> p.)
-            //foreach (var item in )
-            //{
-
-            //} 
-        }
-    }
 
     public class QuickEyeHubController : IPackageManagerExtension
     {
@@ -67,7 +24,7 @@ namespace QuickEye.PackageHub
             return _view = new QuickEyeHubView(_model);
         }
 
-        public void OnPackageSelectionChange(UnityEditor.PackageManager.PackageInfo packageInfo)
+        public void OnPackageSelectionChange(PackageInfo packageInfo)
         {
             var thisPackageIsSelected = packageInfo.name == PackageData.packageUniqueName;
 
@@ -81,15 +38,15 @@ namespace QuickEye.PackageHub
 
         public async void FetchModel(Action onEnd = null)
         {
-            var newModel = await PackageData.FetchPackagesData();
+            var newModel = await PackageData.FetchData();
             _model.packages = newModel.packages;
             _view.Refresh();
             onEnd?.Invoke();
         }
 
-        public void OnPackageAddedOrUpdated(UnityEditor.PackageManager.PackageInfo packageInfo)
+        public void OnPackageAddedOrUpdated(PackageInfo packageInfo)
         { }
-        public void OnPackageRemoved(UnityEditor.PackageManager.PackageInfo packageInfo)
+        public void OnPackageRemoved(PackageInfo packageInfo)
         { }
     }
 }
