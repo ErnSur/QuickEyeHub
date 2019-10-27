@@ -1,43 +1,22 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using UnityEditor.Callbacks;
 using UnityEditor.PackageManager;
 
 namespace QuickEye.PackageHub
 {
-    [CreateAssetMenu(menuName = "Package Hub/Package Wizard")]
-    public class PackageWizard : ScriptableObject
+    public static class PackageWizard
     {
-        public string identifier;
-
-        [SerializeField]
-        private string _displayName;
-
-        [OnOpenAsset]
-        private static bool Install(int instanceID, int line)
+        public static void Install(string identifier)
         {
-            if (EditorUtility.InstanceIDToObject(instanceID) is PackageWizard obj)
+            Debug.Log($"Install Started, uri: {identifier}");
+
+            var request = Client.Add(identifier);
+
+            while (request.Status == StatusCode.InProgress) { }
+
+            if(request.Status == StatusCode.Failure)
             {
-                Debug.Log($"Installing {obj.name}");
-                var request = Client.Add(obj.identifier);
-
-                while (request.Status == StatusCode.InProgress) { }
-
-                if(request.Status == StatusCode.Failure)
-                {
-                    Debug.Log($"{request.Error.errorCode}: {request.Error.message}");
-                    return false;
-                }
-
-                var result = request.Result;
-                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(instanceID), result.name);
-
-                obj._displayName = result.displayName;
-
-                return true;
+                Debug.Log($"{request.Error.errorCode}: {request.Error.message}");
             }
-
-            return false;
         }
     }
 }

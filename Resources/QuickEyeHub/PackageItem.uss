@@ -1,0 +1,12 @@
+.package-item {
+    flex-direction: row;
+    height: 25px;
+    padding-left: 9px;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(0, 0, 0);
+}
+
+.item-label {
+    -unity-text-align: middle-left;
+}

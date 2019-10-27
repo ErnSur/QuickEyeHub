@@ -1,0 +1,10 @@
+﻿QuickEyeHubView {
+	border-width: 1px;
+	border-color: rgb(128, 128, 128);
+	border-radius: 3px;
+}
+
+#package-list {
+	flex-grow: 1;
+	min-height: 200px;
+}
