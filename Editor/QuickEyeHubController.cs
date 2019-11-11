@@ -6,7 +6,6 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace QuickEye.PackageHub
 {
-
     public class QuickEyeHubController : IPackageManagerExtension
     {
         private QuickEyeHubView _view;
@@ -33,20 +32,21 @@ namespace QuickEye.PackageHub
                 FetchModel();
             }
 
-            _view.style.display = thisPackageIsSelected ? DisplayStyle.Flex : DisplayStyle.None;
+            if(_view != null)
+            {
+                _view.style.display = thisPackageIsSelected ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         public async void FetchModel(Action onEnd = null)
         {
             var newModel = await PackageData.FetchData();
             _model.packages = newModel.packages;
-            _view.Refresh();
+            _view?.Refresh();
             onEnd?.Invoke();
         }
 
-        public void OnPackageAddedOrUpdated(PackageInfo packageInfo)
-        { }
-        public void OnPackageRemoved(PackageInfo packageInfo)
-        { }
+        public void OnPackageAddedOrUpdated(PackageInfo packageInfo) { }
+        public void OnPackageRemoved(PackageInfo packageInfo) { }
     }
 }
