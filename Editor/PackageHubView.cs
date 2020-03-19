@@ -1,24 +1,30 @@
-﻿using UnityEngine.UIElements;
+﻿using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-namespace QuickEye.PackageHub
+namespace QuickEye.PackageHub.New
 {
-    public class QuickEyeHubView : VisualElement
+    public class PackageHubView : VisualElement
     {
+        public const string PackageItemUXMLPath = "QuickEyeHub/PackageItem";
+        public const string PackageHubUSSPath = "QuickEyeHub/PackageHub";
         public const string packageListViewName = "package-list";
+        public const string PackageHubViewName = "package-hub";
+
+        public event Action<PackageLink> PackageItemClickEvent;
 
         private ListView _packageList;
-        private VisualTreeAsset _packageItem;
+        private VisualTreeAsset _packageItemPrototype;
 
         private PackageLinks _model;
 
-
-        public QuickEyeHubView(PackageLinks model)
+        public PackageHubView(PackageLinks model)
         {
+            name = PackageHubViewName;
             _model = model;
 
-            _packageItem = Resources.Load<VisualTreeAsset>("QuickEyeHub/PackageItem");
-            styleSheets.Add(Resources.Load<StyleSheet>("QuickEyeHub/PackageHub"));
+            _packageItemPrototype = Resources.Load<VisualTreeAsset>(PackageItemUXMLPath);
+            styleSheets.Add(Resources.Load<StyleSheet>(PackageHubUSSPath));
 
             style.flexGrow = 1;
             AddPackageList();
@@ -39,14 +45,14 @@ namespace QuickEye.PackageHub
             {
                 var button = e.Q<Button>();
                 button.text = _model.packages[i].name;
-                button.clickable = new Clickable(() => PackageWizard.Install(_model.packages[i].url));
+                button.clickable = new Clickable(() => PackageItemClickEvent?.Invoke(_model.packages[i]));
             }
             Add(_packageList);
         }
 
-        VisualElement MakePackageItem()
+        private VisualElement MakePackageItem()
         {
-            var item = _packageItem.CloneTree();
+            var item = _packageItemPrototype.CloneTree();
 
             var button = item.Q<Button>();
             button.RemoveFromClassList("unity-button");

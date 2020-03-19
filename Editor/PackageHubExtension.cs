@@ -1,38 +1,38 @@
-﻿using UnityEditor;
-using UnityEngine.UIElements;
+﻿using System;
+using UnityEditor;
 using UnityEditor.PackageManager.UI;
-using System;
+using UnityEngine.UIElements;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace QuickEye.PackageHub
+namespace QuickEye.PackageHub.New
 {
-    public class QuickEyeHubController : IPackageManagerExtension
+    public class PackageHubExtension : IPackageManagerExtension
     {
-        private QuickEyeHubView _view;
-
-        private PackageLinks _model = new PackageLinks();
+        private PackageLinks _packageLinks = new PackageLinks();
+        private PackageHubView _view;
 
         [InitializeOnLoadMethod]
-        private static void RegisterExtension()
-        {
-            PackageManagerExtensions.RegisterExtension(new QuickEyeHubController());
-        }
+        private static void RegisterExtension() =>
+            PackageManagerExtensions.RegisterExtension(new PackageHubExtension());
 
         public VisualElement CreateExtensionUI()
         {
-            return _view = new QuickEyeHubView(_model);
+            _view = new PackageHubView(_packageLinks);
+            _view.PackageItemClickEvent += (p) => PackageWizard.Install(p.url);
+
+            return _view;
         }
 
         public void OnPackageSelectionChange(PackageInfo packageInfo)
         {
-            var thisPackageIsSelected = packageInfo.name == PackageData.packageUniqueName;
+            var thisPackageIsSelected = packageInfo?.name == PackageData.packageUniqueName;
 
             if (thisPackageIsSelected)
             {
                 FetchModel();
             }
 
-            if(_view != null)
+            if (_view != null)
             {
                 _view.style.display = thisPackageIsSelected ? DisplayStyle.Flex : DisplayStyle.None;
             }
@@ -41,7 +41,7 @@ namespace QuickEye.PackageHub
         public async void FetchModel(Action onEnd = null)
         {
             var newModel = await PackageData.FetchData();
-            _model.packages = newModel.packages;
+            _packageLinks.packages = newModel.packages;
             _view?.Refresh();
             onEnd?.Invoke();
         }
